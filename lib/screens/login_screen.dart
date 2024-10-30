@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone_app/resources/auth_methods.dart';
+import 'package:instagram_clone_app/responsive/mobile_screen_layout.dart';
+import 'package:instagram_clone_app/responsive/responsive_layout_screen.dart';
+import 'package:instagram_clone_app/responsive/web_screen_layout.dart';
 import 'package:instagram_clone_app/screens/signup_screen.dart';
 import 'package:instagram_clone_app/utils/colors.dart';
 import 'package:instagram_clone_app/utils/utils.dart';
@@ -34,6 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
       password: passwordController.text,
     );
     if (res == 'success') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
       //
     } else {
       // snack bar error
