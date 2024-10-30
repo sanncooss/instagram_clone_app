@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_app/firebase_options.dart';
+import 'package:instagram_clone_app/screens/login_screen.dart';
 import 'package:instagram_clone_app/screens/signup_screen.dart';
 import 'package:instagram_clone_app/utils/colors.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       //     webScreenLayout: WebScreenLayout(),
       //   ),
       // ),
-      home: SignUpScreen(),
+      home: LoginScreen(),
     );
   }
 }

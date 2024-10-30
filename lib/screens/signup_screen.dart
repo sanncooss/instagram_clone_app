@@ -1,7 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone_app/resources/auth_methods.dart';
 import 'package:instagram_clone_app/utils/colors.dart';
+import 'package:instagram_clone_app/utils/utils.dart';
 import 'package:instagram_clone_app/widgets/textfield_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,6 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
+  Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,6 +32,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
     usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
+  void signUpuser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+      email: emailController.text,
+      password: passwordController.text,
+      username: usernameController.text,
+      bio: bioController.text, file: _image!,
+      // file:
+    );
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != 'success') {
+      showSnackBar(context, res);
+    }
+
+    print(res);
   }
 
   @override
@@ -53,17 +89,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
               //circular widget to accept and show our selected file
               Stack(
                 children: [
-                  CircleAvatar(
-                    radius: 64,
-                    backgroundImage: NetworkImage(
-                      'https://avatars.mds.yandex.net/i?id=2bba1b195cab1e5ee480b15f204848b3c5626639-13012864-images-thumbs&n=13',
-                    ),
-                  ),
+                  _image != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_image!),
+                        )
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                            'https://avatars.mds.yandex.net/i?id=2bba1b195cab1e5ee480b15f204848b3c5626639-13012864-images-thumbs&n=13',
+                          ),
+                        ),
                   Positioned(
                     bottom: 1,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: selectImage,
                       icon: const Icon(Icons.add_a_photo),
                     ),
                   ),
@@ -109,18 +150,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               // Button
               InkWell(
-                onTap: () async {
-                  String res = await AuthMethods().signUpUser(
-                    email: emailController.text,
-                    password: passwordController.text,
-                    username: usernameController.text,
-                    bio: bioController.text,
-                    // file: 
-                  );
-                  print(res);
-                },
+                onTap: signUpuser,
                 child: Container(
-                  child: const Text('Log in'),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor ,
+                          ),
+                        )
+                      : Text('Sign in'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
