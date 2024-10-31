@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -33,32 +32,32 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
       home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(), //
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.hasData) {
-              const ResponsiveLayout(
-                mobileScreenLayout: MobileScreenLayout(),
-                webScreenLayout: WebScreenLayout(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  '${snapshot.error}',
-                ),
-              );
+          // stream: FirebaseAuth.instance.idTokenChanges()  //
+          // stream: FirebaseAuth.instance.userChanges()  // in this case we can update account eg.
+          stream: FirebaseAuth.instance
+              .authStateChanges(), // runs only user signed in and signed out.
+          
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                return ResponsiveLayout(
+                  mobileScreenLayout: MobileScreenLayout(),
+                  webScreenLayout: WebScreenLayout(),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('${snapshot.error}'),
+                );
+              }
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: primaryColor,
-                ),
+                child: CircularProgressIndicator(),
               );
             }
-          }
-          return const LoginScreen();
-        },
-      ),
+            return LoginScreen();
+          },
+        ),
     );
   }
 }
