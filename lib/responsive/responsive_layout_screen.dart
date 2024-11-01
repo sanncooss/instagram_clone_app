@@ -20,11 +20,10 @@ class ResponsiveLayout extends StatefulWidget {
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
-    super.initState();
     addData();
   }
 
-  void addData() async {
+  addData() async {
     UserProvider _userProvider = Provider.of(
       context,
       listen: false,
@@ -34,12 +33,14 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constrains) {
-      if (constrains.maxWidth > webScreenSize) {
-        // web screen layout
-        return widget.webScreenLayout;
-      }
-      return widget.mobileScreenLayout;
-    });
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        if (constrains.maxWidth > webScreenSize) {
+          // web screen layout
+          return widget.webScreenLayout;
+        }
+        return widget.mobileScreenLayout;
+      },
+    );
   }
 }
